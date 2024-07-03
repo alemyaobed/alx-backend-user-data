@@ -12,8 +12,8 @@ Learn how to authenticate users securely using environment variables and best pr
 
 Explore essential resources and packages used in this directory:
 
-- [What Is PII, non-PII, and Personal Data?](https://www.privacyrights.org/consumer-guides/what-you-need-know-about-personally-identifiable-information-pii)
-- [Logging Documentation](https://docs.python.org/3/howto/logging.html)
+- [What Is PII, non-PII, and Personal Data?](https://piwik.pro/blog/what-is-pii-personal-data/)
+- [Logging Documentation](https://docs.python.org/3/library/logging.html)
 - [bcrypt Package Documentation](https://github.com/pyca/bcrypt/)
 
 ### Learning Objectives
