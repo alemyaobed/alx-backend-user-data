@@ -14,12 +14,14 @@ substitution with a single regex.
 '''
 from typing import List
 import re
+import logging
 
 
 def filter_datum(
         fields: List[str], redaction: str,
         message: str, separator: str) -> str:
     '''Returns the log message obfuscated.'''
+    print(message)
     for field in fields:
         # Create the regex pattern for the current field
         pattern = fr'({field}=)[^{separator}]+({separator})'
@@ -28,3 +30,36 @@ def filter_datum(
         # Substitute the pattern in the message
         message = re.sub(pattern, replacement, message)
     return message
+
+
+class RedactingFormatter(logging.Formatter):
+    """ Redacting Formatter class
+        """
+
+    REDACTION = "***"
+    FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
+    SEPARATOR = ";"
+
+    def __init__(self, fields: List[str]):
+        ''''''
+        super(RedactingFormatter, self).__init__(self.FORMAT)
+        self.fields = fields
+
+    def format(self, record: logging.LogRecord) -> str:
+        '''
+        Update the class to accept a list of strings fields constructor
+        argument.
+
+        Implement the format method to filter values in incoming log records
+        using filter_datum. Values for fields in fields should be filtered.
+
+        DO NOT extrapolate FORMAT manually. The format method should be less
+        than 5 lines long.
+        '''
+        # Call the parent class's format method to get the initial formatted
+        # log message
+        original_message = super().format(record)
+        # Redact the specified fields in the log message
+        redacted_message = filter_datum(
+            self.fields, self.REDACTION, original_message, self.SEPARATOR)
+        return redacted_message
