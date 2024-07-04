@@ -56,10 +56,6 @@ class RedactingFormatter(logging.Formatter):
         DO NOT extrapolate FORMAT manually. The format method should be less
         than 5 lines long.
         '''
-        # Call the parent class's format method to get the initial formatted
-        # log message
-        original_message = super().format(record)
-        # Redact the specified fields in the log message
-        redacted_message = filter_datum(
-            self.fields, self.REDACTION, original_message, self.SEPARATOR)
-        return redacted_message
+        record.msg = filter_datum(
+            self.fields, self.REDACTION, record.getMessage(), self.SEPARATOR)
+        return super().format(record)
