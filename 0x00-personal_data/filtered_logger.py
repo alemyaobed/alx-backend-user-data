@@ -71,19 +71,34 @@ def get_logger() -> logging.Logger:
 
 
 def get_db() -> connection.MySQLConnection:
-    """
-    Connect to mysql server with environmental vars
-    """
-    username = environ.get("PERSONAL_DATA_DB_USERNAME", "root")
-    password = environ.get("PERSONAL_DATA_DB_PASSWORD", "")
-    db_host = environ.get("PERSONAL_DATA_DB_HOST", "localhost")
-    db_name = environ.get("PERSONAL_DATA_DB_NAME")
-    connector = connection.MySQLConnection(
-        user=username,
-        password=password,
-        host=db_host,
-        database=db_name)
-    return connector
+    '''
+    Database credentials should NEVER be stored in code or checked into version
+    control. One secure option is to store them as environment variable on the
+    application server.
+
+    In this task, you will connect to a secure holberton database to read a
+    users table. The database is protected by a username and password that are
+    set as environment variables on the server named PERSONAL_DATA_DB_USERNAME
+    (set the default as “root”), PERSONAL_DATA_DB_PASSWORD (set the default
+    as an empty string) and PERSONAL_DATA_DB_HOST (set the
+    default as “localhost”).
+
+    The database name is stored in PERSONAL_DATA_DB_NAME.
+
+    Implement a get_db function that returns a connector to the database
+    (mysql.connector.connection.MySQLConnection object).
+
+    Use the os module to obtain credentials from the environment
+    Use the module mysql-connector-python to connect to the MySQL database
+    (pip3 install mysql-connector-python)
+    '''
+    db_connection = connection.MySQLConnection(
+        host=environ.get('PERSONAL_DATA_DB_HOST', 'localhost'),
+        user=environ.get('PERSONAL_DATA_DB_USERNAME', 'root'),
+        password=environ.get('PERSONAL_DATA_DB_PASSWORD', ''),
+        database=environ.get('PERSONAL_DATA_DB_NAME')
+    )
+    return db_connection
 
 
 class RedactingFormatter(logging.Formatter):
@@ -113,3 +128,44 @@ class RedactingFormatter(logging.Formatter):
         record.msg = filter_datum(
             self.fields, self.REDACTION, record.getMessage(), self.SEPARATOR)
         return super().format(record)
+
+
+def main():
+    '''
+    Implement a main function that takes no arguments and returns nothing.
+
+    The function will obtain a database connection using get_db and retrieve
+    all rows in the users table and display each row under a filtered format
+    like this:
+
+    [HOLBERTON] user_data INFO 2019-11-19 18:37:59,596: name=***; email=***;
+    phone=***; ssn=***; password=***;
+    ip=e848:e856:4e0b:a056:54ad:1e98:8110:ce1b; last_login=2019-11-14T06:16:24;
+    user_agent=Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64;
+    Trident/5.0; KTXN);
+
+    Filtered fields:
+        name
+        email
+        phone
+        ssn
+        password
+        Only your main function should run when the module is executed.
+    '''
+    my_db = get_db()
+    cursor = my_db.cursor()
+    cursor.execute("SELECT * FROM users;")
+    logger = get_logger()
+
+    for row in cursor:
+        message = "name={}; email={}; phone={}; ssn={}; password={}; ip={}; \
+        last_login={}; user_agent={};".format(*row)
+        logger.info(message)
+
+    cursor.close()
+    my_db.close()
+
+
+if __name__ == "__main__":
+    ''' Execute only the main function when this module is executed '''
+    main()
