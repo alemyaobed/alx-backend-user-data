@@ -158,8 +158,10 @@ def main():
     logger = get_logger()
 
     for row in cursor:
-        message = "name={}; email={}; phone={}; ssn={}; password={}; ip={}; \
-        last_login={}; user_agent={};".format(*row)
+        message = (
+        "name={}; email={}; phone={}; ssn={}; password={}; ip={}; "
+        "last_login={}; user_agent={};".format(*row)
+        )
         logger.info(message)
 
     cursor.close()
