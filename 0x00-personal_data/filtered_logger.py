@@ -15,6 +15,7 @@ substitution with a single regex.
 from typing import List
 import re
 import logging
+import mysql.connector
 
 PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
 
@@ -68,7 +69,7 @@ def get_logger() -> logging.Logger:
     return logger
 
 
-def get_db():
+def get_db() -> mysql.connector.connection.MySQLConnection:
     '''
     Database credentials should NEVER be stored in code or checked into version
     control. One secure option is to store them as environment variable on the
@@ -90,7 +91,6 @@ def get_db():
     Use the module mysql-connector-python to connect to the MySQL database
     (pip3 install mysql-connector-python)
     '''
-    import mysql.connector
     from dotenv import load_dotenv
     import os
 
