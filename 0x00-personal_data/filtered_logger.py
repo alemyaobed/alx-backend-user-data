@@ -15,8 +15,8 @@ substitution with a single regex.
 from typing import List
 import re
 import logging
-from mysql.connector import connect, connection
-import os
+from mysql.connector import connection
+from os import environ
 
 PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
 
@@ -92,11 +92,11 @@ def get_db() -> connection.MySQLConnection:
     Use the module mysql-connector-python to connect to the MySQL database
     (pip3 install mysql-connector-python)
     '''
-    db_connection = connect(
-        host=os.getenv('PERSONAL_DATA_DB_HOST', 'localhost'),
-        user=os.getenv('PERSONAL_DATA_DB_USERNAME', 'root'),
-        password=os.getenv('PERSONAL_DATA_DB_PASSWORD', ''),
-        database=os.getenv('PERSONAL_DATA_DB_NAME')
+    db_connection = connection.MySQLConnection(
+        host=environ.get('PERSONAL_DATA_DB_HOST', 'localhost'),
+        user=environ.get('PERSONAL_DATA_DB_USERNAME', 'root'),
+        password=environ.get('PERSONAL_DATA_DB_PASSWORD', ''),
+        database=environ.get('PERSONAL_DATA_DB_NAME')
     )
     return db_connection
 
