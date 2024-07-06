@@ -16,6 +16,7 @@ from typing import List
 import re
 import logging
 import mysql.connector
+import os
 
 PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
 
@@ -91,10 +92,6 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
     Use the module mysql-connector-python to connect to the MySQL database
     (pip3 install mysql-connector-python)
     '''
-    from dotenv import load_dotenv
-    import os
-
-    load_dotenv()
     my_db = mysql.connector.connect(
         host=os.getenv('PERSONAL_DATA_DB_HOST', default='localhost'),
         user=os.getenv('PERSONAL_DATA_DB_USERNAME', default='root'),
