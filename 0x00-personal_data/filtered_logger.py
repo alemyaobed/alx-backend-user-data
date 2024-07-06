@@ -71,34 +71,19 @@ def get_logger() -> logging.Logger:
 
 
 def get_db() -> connection.MySQLConnection:
-    '''
-    Database credentials should NEVER be stored in code or checked into version
-    control. One secure option is to store them as environment variable on the
-    application server.
-
-    In this task, you will connect to a secure holberton database to read a
-    users table. The database is protected by a username and password that are
-    set as environment variables on the server named PERSONAL_DATA_DB_USERNAME
-    (set the default as “root”), PERSONAL_DATA_DB_PASSWORD (set the default
-    as an empty string) and PERSONAL_DATA_DB_HOST (set the
-    default as “localhost”).
-
-    The database name is stored in PERSONAL_DATA_DB_NAME.
-
-    Implement a get_db function that returns a connector to the database
-    (mysql.connector.connection.MySQLConnection object).
-
-    Use the os module to obtain credentials from the environment
-    Use the module mysql-connector-python to connect to the MySQL database
-    (pip3 install mysql-connector-python)
-    '''
-    db_connection = connection.MySQLConnection(
-        host=environ.get('PERSONAL_DATA_DB_HOST', 'localhost'),
-        user=environ.get('PERSONAL_DATA_DB_USERNAME', 'root'),
-        password=environ.get('PERSONAL_DATA_DB_PASSWORD', ''),
-        database=environ.get('PERSONAL_DATA_DB_NAME')
-    )
-    return db_connection
+    """
+    Connect to mysql server with environmental vars
+    """
+    username = environ.get("PERSONAL_DATA_DB_USERNAME", "root")
+    password = environ.get("PERSONAL_DATA_DB_PASSWORD", "")
+    db_host = environ.get("PERSONAL_DATA_DB_HOST", "localhost")
+    db_name = environ.get("PERSONAL_DATA_DB_NAME")
+    connector = connection.MySQLConnection(
+        user=username,
+        password=password,
+        host=db_host,
+        database=db_name)
+    return connector
 
 
 class RedactingFormatter(logging.Formatter):
