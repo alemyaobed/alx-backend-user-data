@@ -16,6 +16,8 @@ from typing import List
 import re
 import logging
 import mysql.connector
+from dotenv import load_dotenv
+import os
 
 PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
 
@@ -56,19 +58,49 @@ def get_logger() -> logging.Logger:
     What Is PII, non-PII, and personal data?
     Uncovering Password Habits
     '''
-    log = logging.Logger('user_data')
-    print(type(log))
-    log.setLevel(logging.INFO)
-    handler = logging.StreamHandler(RedactingFormatter(fields=PII_FIELDS).format)
-    log.addHandler(handler)
-    return log
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
+
+    handler = logging.StreamHandler()
+    formatter = RedactingFormatter(fields=PII_FIELDS)
+    handler.setFormatter(formatter)
+
+    logger.addHandler(handler)
+
+    return logger
 
 
 def get_db():
-    ''''''
-    mydb = mysql.connector.connect(
-        
+    '''
+    Database credentials should NEVER be stored in code or checked into version
+    control. One secure option is to store them as environment variable on the
+    application server.
+
+    In this task, you will connect to a secure holberton database to read a
+    users table. The database is protected by a username and password that are
+    set as environment variables on the server named PERSONAL_DATA_DB_USERNAME
+    (set the default as “root”), PERSONAL_DATA_DB_PASSWORD (set the default
+    as an empty string) and PERSONAL_DATA_DB_HOST (set the
+    default as “localhost”).
+
+    The database name is stored in PERSONAL_DATA_DB_NAME.
+
+    Implement a get_db function that returns a connector to the database
+    (mysql.connector.connection.MySQLConnection object).
+
+    Use the os module to obtain credentials from the environment
+    Use the module mysql-connector-python to connect to the MySQL database
+    (pip3 install mysql-connector-python)
+    '''
+    load_dotenv()
+    my_db = mysql.connector.connect(
+        hostname=os.getenv('PERSONAL_DATA_DB_HOST', default='localhost'),
+        user=os.getenv('PERSONAL_DATA_DB_USERNAME', default='root'),
+        password=os.getenv('PERSONAL_DATA_DB_PASSWORD', default=''),
+        database=os.getenv('PERSONAL_DATA_DB_NAME')
     )
+    return my_db
 
 
 class RedactingFormatter(logging.Formatter):
