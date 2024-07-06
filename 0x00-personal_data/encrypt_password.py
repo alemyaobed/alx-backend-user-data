@@ -11,7 +11,7 @@ Use the bcrypt package to perform the hashing (with hashpw).
 from bcrypt import hashpw, checkpw, gensalt
 
 
-def hash_password(password: str) -> str:
+def hash_password(password: str) -> bytes:
     ''''''
     hashed = hashpw(password.encode(), gensalt())
     return hashed
