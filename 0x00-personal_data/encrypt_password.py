@@ -8,7 +8,7 @@ string.
 
 Use the bcrypt package to perform the hashing (with hashpw).
 '''
-from bcrypt import hashpw, checkpw, gensalt
+from bcrypt import hashpw, gensalt
 
 
 def hash_password(password: str) -> bytes:
