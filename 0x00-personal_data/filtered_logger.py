@@ -96,7 +96,7 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
 
     load_dotenv()
     my_db = mysql.connector.connect(
-        hostname=os.getenv('PERSONAL_DATA_DB_HOST', default='localhost'),
+        host=os.getenv('PERSONAL_DATA_DB_HOST', default='localhost'),
         user=os.getenv('PERSONAL_DATA_DB_USERNAME', default='root'),
         password=os.getenv('PERSONAL_DATA_DB_PASSWORD', default=''),
         database=os.getenv('PERSONAL_DATA_DB_NAME')
