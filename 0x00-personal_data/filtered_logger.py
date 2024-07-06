@@ -15,7 +15,7 @@ substitution with a single regex.
 from typing import List
 import re
 import logging
-from mysql.connector import connection
+import mysql.connector.connection as MCC
 from os import environ
 
 PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
@@ -70,7 +70,7 @@ def get_logger() -> logging.Logger:
     return logger
 
 
-def get_db() -> connection.MySQLConnection:
+def get_db() -> MCC.MySQLConnection:
     '''
     Database credentials should NEVER be stored in code or checked into version
     control. One secure option is to store them as environment variable on the
@@ -92,7 +92,7 @@ def get_db() -> connection.MySQLConnection:
     Use the module mysql-connector-python to connect to the MySQL database
     (pip3 install mysql-connector-python)
     '''
-    db_connection = connection.MySQLConnection(
+    db_connection = MCC.MySQLConnection(
         host=environ.get('PERSONAL_DATA_DB_HOST', 'localhost'),
         user=environ.get('PERSONAL_DATA_DB_USERNAME', 'root'),
         password=environ.get('PERSONAL_DATA_DB_PASSWORD', ''),
