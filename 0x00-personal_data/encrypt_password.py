@@ -13,5 +13,5 @@ from bcrypt import hashpw, checkpw, gensalt
 
 def hash_password(password: str) -> bytes:
     ''' Hashing using bcrypt and returning a byte string'''
-    hashed = hashpw(password.encode(), gensalt())
+    hashed = hashpw(password.encode('utf-8'), gensalt())
     return hashed
