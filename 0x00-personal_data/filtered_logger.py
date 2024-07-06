@@ -159,8 +159,8 @@ def main():
 
     for row in cursor:
         message = (
-        "name={}; email={}; phone={}; ssn={}; password={}; ip={}; "
-        "last_login={}; user_agent={};".format(*row)
+            "name={}; email={}; phone={}; ssn={}; password={}; ip={}; "
+            "last_login={}; user_agent={};".format(*row)
         )
         logger.info(message)
 
