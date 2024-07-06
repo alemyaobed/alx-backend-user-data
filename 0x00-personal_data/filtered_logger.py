@@ -15,6 +15,7 @@ substitution with a single regex.
 from typing import List
 import re
 import logging
+import mysql.connector
 
 PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
 
@@ -55,17 +56,19 @@ def get_logger() -> logging.Logger:
     What Is PII, non-PII, and personal data?
     Uncovering Password Habits
     '''
-    logger = logging.getLogger("user_data")
-    logger.setLevel(logging.INFO)
-    logger.propagate = False
+    log = logging.Logger('user_data')
+    print(type(log))
+    log.setLevel(logging.INFO)
+    handler = logging.StreamHandler(RedactingFormatter(fields=PII_FIELDS).format)
+    log.addHandler(handler)
+    return log
 
-    handler = logging.StreamHandler()
-    formatter = RedactingFormatter(fields=PII_FIELDS)
-    handler.setFormatter(formatter)
 
-    logger.addHandler(handler)
-
-    return logger
+def get_db():
+    ''''''
+    mydb = mysql.connector.connect(
+        
+    )
 
 
 class RedactingFormatter(logging.Formatter):
