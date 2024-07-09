@@ -22,7 +22,11 @@ class Auth:
         return True
 
     def authorization_header(self, request=None) -> str:
-        ''' Returns None for now '''
+        '''
+        Extracts the Authorization header from the Flask request object.
+        '''
+        if request and request.headers.get('Authorization'):
+            return request.headers.get('Authorization')
         return None
 
     def current_user(self, request=None) -> TypeVar('User'):
