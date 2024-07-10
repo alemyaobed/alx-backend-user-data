@@ -43,13 +43,24 @@ class BasicAuth(Auth):
             self, decoded_base64_authorization_header: str) -> (str, str):
         '''
         Returns the user email and password from the Base64 decoded value
+        And modified to accept passwords with : in them
         '''
         if (decoded_base64_authorization_header is None or
                 not isinstance(decoded_base64_authorization_header, str) or
                 not (':' in decoded_base64_authorization_header)):
             return None, None
-        email, password = tuple(
-                                decoded_base64_authorization_header.split(':'))
+        # Assuming the email doesn't contain :, meaning the first of the split
+        # with : which is at index 0 will be the email. Now combining the email
+        # with the : and removing it will be left with the portion representing
+        # the password
+        # eg: 'email@e.com:pass:word:134' using split will give
+        # ['email@e.com', 'pass', 'word', '134'] with index 0 being the email
+        # so removing the characters of the email with the first : leaves us
+        # with the password
+        email = (decoded_base64_authorization_header.split(':'))[0]
+        remove_email = email + ':'
+        password = decoded_base64_authorization_header.replace(
+                                                            remove_email, '')
 
         return email, password
 
