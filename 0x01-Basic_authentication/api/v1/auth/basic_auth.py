@@ -48,10 +48,10 @@ class BasicAuth(Auth):
                 not isinstance(decoded_base64_authorization_header, str) or
                 not (':' in decoded_base64_authorization_header)):
             return None, None
-        username, password = tuple(
+        email, password = tuple(
                                 decoded_base64_authorization_header.split(':'))
 
-        return username, password
+        return email, password
 
     def user_object_from_credentials(
             self, user_email: str, user_pwd: str) -> TypeVar('User'):
@@ -79,4 +79,16 @@ class BasicAuth(Auth):
 
     def current_user(self, request=None) -> TypeVar('User'):
         '''
+        Overloads Auth and retrieves the User instance for a request
         '''
+        authorization_header = self.authorization_header(request=request)
+        base64_authorization_header = self.extract_base64_authorization_header(
+            authorization_header=authorization_header)
+        decoded_base64_auth_header = self.decode_base64_authorization_header(
+            base64_authorization_header=base64_authorization_header)
+        extracted_user_credentials = self.extract_user_credentials(
+            decoded_base64_authorization_header=decoded_base64_auth_header)
+        email, password = extracted_user_credentials
+        current_user_instance = self.user_object_from_credentials(
+            user_email=email, user_pwd=password)
+        return current_user_instance
