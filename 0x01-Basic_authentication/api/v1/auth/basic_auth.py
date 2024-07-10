@@ -63,10 +63,20 @@ class BasicAuth(Auth):
                 not isinstance(user_email, str)):
             return None
         credential_dict = {'email': user_email}
-        possible_user_instance = User.search(attributes=credential_dict)
+
+        # In case there is no user instance, there would be a key error using
+        # the search method, therefor using try/except
+        try:
+            possible_user_instance = User.search(attributes=credential_dict)
+        except KeyError:
+            return None
         if possible_user_instance:
             # Hoping it returns 1 obj since email is unique else the first obj
             user_instance = possible_user_instance[0]
             if user_instance.is_valid_password(user_pwd):
                 return user_instance
         return None
+
+    def current_user(self, request=None) -> TypeVar('User'):
+        '''
+        '''
