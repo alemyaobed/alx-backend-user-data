@@ -57,10 +57,13 @@ class BasicAuth(Auth):
         # ['email@e.com', 'pass', 'word', '134'] with index 0 being the email
         # so removing the characters of the email with the first : leaves us
         # with the password
-        email = (decoded_base64_authorization_header.split(':'))[0]
-        remove_email = email + ':'
-        password = decoded_base64_authorization_header.replace(
-                                                            remove_email, '')
+        # email = (decoded_base64_authorization_header.split(':'))[0]
+        # remove_email = email + ':'
+        # password = decoded_base64_authorization_header.replace(
+        #                                                     remove_email, '')
+
+        # A better way: Split on the first occurrence of ':'
+        email, password = decoded_base64_authorization_header.split(':', 1)
 
         return email, password
 
