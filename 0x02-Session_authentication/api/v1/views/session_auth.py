@@ -8,10 +8,11 @@ from os import getenv
 
 
 @app_views.route('/auth_session/login', methods=['POST'], strict_slashes=False)
-def session() -> str:
+def session_login() -> str:
     """ POST /api/v1/auth_session/login
     Return:
-      - the status of the API
+      - logging a user in, creating a session for the user and returning a
+        session cookie
     """
     email = request.form.get('email')
     if not email:
@@ -44,3 +45,17 @@ def session() -> str:
             response.set_cookie(cookie_name, session_id)
             return response
     return jsonify({"error": "no user found for this email"}), 404
+
+
+@app_views.route('/auth_session/logout', methods=['DELETE'],
+                 strict_slashes=False)
+def session_logout() -> str:
+    """ DELETE /api/v1/auth_session/logout
+    Return:
+      - logging out a user by deleting a session based on the session cookie
+    """
+    from api.v1.app import auth
+
+    if auth.destroy_session(request):
+        return jsonify({}), 200
+    abort(404)
