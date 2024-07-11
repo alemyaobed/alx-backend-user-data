@@ -2,15 +2,13 @@
 """ Module for SessionExpAuth that inherits from SessionAuth
 """
 from .session_auth import SessionAuth
-from uuid import uuid4
-from models.user import User
 from os import getenv
 from datetime import datetime, timedelta
 
 
 class SessionExpAuth(SessionAuth):
     '''
-    The class for handling  session authentication expiration
+    The class for handling session authentication expiration
     '''
     def __init__(self):
         ''' Overload '''
