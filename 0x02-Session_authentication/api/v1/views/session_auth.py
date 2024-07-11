@@ -42,5 +42,5 @@ def session() -> str:
             response = jsonify(user_instance.to_json())
             cookie_name = getenv('SESSION_NAME')
             response.set_cookie(cookie_name, session_id)
-            return response, 201
+            return response
     return jsonify({"error": "no user found for this email"}), 404
