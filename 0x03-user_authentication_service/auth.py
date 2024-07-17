@@ -3,7 +3,7 @@
 Authentication module
 '''
 from db import DB, User
-from bcrypt import hashpw, gensalt
+from bcrypt import hashpw, gensalt, checkpw
 from sqlalchemy.orm.exc import NoResultFound
 
 
@@ -34,3 +34,12 @@ class Auth:
             return new_user
         except Exception as e:
             raise ValueError(f"Error occurred: {e}")
+
+    def valid_login(self, email: str, password: str) -> bool:
+        ''' Returns True if email and password are validated, else False '''
+        try:
+            user = self._db.find_user_by(email=email)
+            if user:
+                return checkpw(password.encode('utf-8'), user.hashed_password)
+        except:
+            return False
