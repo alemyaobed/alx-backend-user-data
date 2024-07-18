@@ -2,7 +2,7 @@
 '''
 The Flask App model
 '''
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request, abort, redirect
 from auth import Auth
 from user import User
 
@@ -44,6 +44,19 @@ def login():
         return response
     else:
         abort(401)
+
+
+@app.route('/sessions', methods=['DELETE'], strict_slashes=False)
+def logout():
+    ''' Logs a user out and deletes the user session '''
+    session_id = request.cookies.get("session_id")
+    if session_id:
+        user = AUTH.get_user_from_session_id(session_id=session_id)
+        if user:
+            AUTH.destroy_session(user_id=user.id)
+            redirect('/')
+    else:
+        abort(403)
 
 
 if __name__ == '__main__':
