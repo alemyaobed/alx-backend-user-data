@@ -91,3 +91,18 @@ class Auth:
             except ValueError:
                 pass
         return None
+
+    def get_reset_password_token(self, email: str) -> str:
+        '''
+        Finds a user corresponding to the email, generates a UUID and updates
+        the user’s reset_token database field. Returns the generated UUID
+        '''
+        try:
+            user = self._db.find_user_by(email=email)
+            if user:
+                reset_token = _generate_uuid()
+                self._db.update_user(user_id=user.id, reset_token=reset_token)
+                return user.reset_token
+            raise ValueError
+        except NoResultFound:
+            pass
