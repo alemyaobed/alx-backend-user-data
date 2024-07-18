@@ -52,7 +52,10 @@ class Auth:
         return False
 
     def create_session(self, email: str) -> str:
-        ''' Creates a session and returns the session id as a string '''
+        '''
+        Creates a new session for a user identified by email and returns the
+        session id as a string
+        '''
         try:
             user = self._db.find_user_by(email=email)
             if user:

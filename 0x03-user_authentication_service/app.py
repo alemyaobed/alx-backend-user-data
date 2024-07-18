@@ -2,8 +2,9 @@
 '''
 The Flask App model
 '''
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, abort
 from auth import Auth
+from user import User
 
 app = Flask(__name__)
 AUTH = Auth()
@@ -27,6 +28,22 @@ def users():
         return jsonify({"message": "email already registered"}), 400
     else:
         return jsonify({"email": f"{email}", "message": "user created"})
+
+
+@app.route('/sessions', methods=['POST'], strict_slashes=False)
+def login():
+    ''' Logs a user in, creates a user session and returns it as a cookie '''
+    email = request.form.get('email')
+    password = request.form.get('password')
+    login_valid = AUTH.valid_login(email=email, password=password)
+    if login_valid:
+        payload = {"email": f"{email}", "message": "logged in"}
+        session_id = AUTH.create_session(email=email)
+        response = jsonify(payload)
+        response.set_cookie('session_id', session_id)
+        return response
+    else:
+        abort(401)
 
 
 if __name__ == '__main__':
