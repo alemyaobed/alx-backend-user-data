@@ -16,9 +16,12 @@ def register_user(email: str, password: str) -> None:
     response = requests.post(url=url, data=data)
     response_email = response.json().get('email')
     response_message = response.json().get('message')
-    assert response_email == email
-    assert response_message == "user created"
-    assert response.status_code == 200
+    assert response_email == email, \
+        f"Expected email {email} but got {response_email}"
+    assert response_message == "user created", \
+        f"Expected 'user created' but got {response_message}"
+    assert response.status_code == 200, \
+        f"Expected 200 but got {response.status_code}"
 
 
 def log_in_wrong_password(email: str, password: str) -> None:
@@ -26,8 +29,10 @@ def log_in_wrong_password(email: str, password: str) -> None:
     url = 'http://localhost:5000/sessions'
     data = {'email': email, 'password': password}
     response = requests.post(url=url, data=data)
-    assert response.status_code == 401
-    assert response.cookies.get('session_id') is None
+    assert response.status_code == 401, \
+        f"Expected 401 but got {response.status_code}"
+    assert response.cookies.get('session_id') is None, \
+        "Expected no session_id cookie"
 
 
 def log_in(email: str, password: str) -> str:
@@ -37,10 +42,14 @@ def log_in(email: str, password: str) -> str:
     response = requests.post(url=url, data=data)
     response_email = response.json().get('email')
     response_message = response.json().get('message')
-    assert response.status_code == 200
-    assert response_email == email
-    assert response_message == "logged in"
-    assert response.cookies.get('session_id') is not None
+    assert response.status_code == 200, \
+        f"Expected 200 but got {response.status_code}"
+    assert response_email == email, \
+        f"Expected email {email} but got {response_email}"
+    assert response_message == "logged in", \
+        f"Expected 'logged in' but got {response_message}"
+    assert response.cookies.get('session_id') is not None, \
+        "Expected session_id cookie"
     return response.cookies.get('session_id')
 
 
@@ -51,7 +60,8 @@ def profile_unlogged() -> None:
     '''
     url = 'http://localhost:5000/profile'
     response = requests.get(url=url)
-    assert response.status_code == 403
+    assert response.status_code == 403, \
+        f"Expected 403 but got {response.status_code}"
 
 
 def profile_logged(session_id: str) -> None:
@@ -62,8 +72,10 @@ def profile_logged(session_id: str) -> None:
     cookies = {'session_id': session_id}
     response = requests.get(url=url, cookies=cookies)
     response_email = response.json().get('email')
-    assert response.status_code == 200
-    assert response_email is not None
+    assert response.status_code == 200, \
+        f"Expected 200 but got {response.status_code}"
+    assert response_email is not None, \
+        "Expected an email in the response"
 
 
 def log_out(session_id: str) -> None:
@@ -71,7 +83,8 @@ def log_out(session_id: str) -> None:
     url = 'http://localhost:5000/sessions'
     cookies = {'session_id': session_id}
     response = requests.delete(url=url, cookies=cookies)
-    assert response.status_code == 200
+    assert response.status_code == 200, \
+        f"Expected 200 but got {response.status_code}"
 
 
 def reset_password_token(email: str) -> str:
@@ -81,9 +94,12 @@ def reset_password_token(email: str) -> str:
     response = requests.post(url=url, data=data)
     response_email = response.json().get('email')
     response_token = response.json().get('reset_token')
-    assert response_email == email
-    assert response_token is not None
-    assert response.status_code == 200
+    assert response_email == email, \
+        f"Expected email {email} but got {response_email}"
+    assert response_token is not None, \
+        "Expected a reset_token in the response"
+    assert response.status_code == 200, \
+        f"Expected 200 but got {response.status_code}"
     return response_token
 
 
@@ -98,9 +114,12 @@ def update_password(email: str, reset_token: str, new_password: str) -> None:
     response = requests.put(url=url, data=data)
     response_email = response.json().get('email')
     response_message = response.json().get('message')
-    assert response.status_code == 200
-    assert response_email == email
-    assert response_message == "Password updated"
+    assert response.status_code == 200, \
+        f"Expected 200 but got {response.status_code}"
+    assert response_email == email, \
+        f"Expected email {email} but got {response_email}"
+    assert response_message == "Password updated", \
+        f"Expected 'Password updated' but got {response_message}"
 
 
 if __name__ == "__main__":
