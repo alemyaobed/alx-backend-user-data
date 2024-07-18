@@ -6,6 +6,7 @@ from db import DB, User
 from bcrypt import hashpw, gensalt, checkpw
 from sqlalchemy.orm.exc import NoResultFound
 import uuid
+from typing import Union
 
 
 def _hash_password(password: str) -> bytes:
@@ -65,3 +66,17 @@ class Auth:
                 return user.session_id
         except NoResultFound:
             pass
+
+    def get_user_from_session_id(self, session_id: str) -> Union[User | None]:
+        '''
+        Returns a user for a given session id or None if no user was found with
+        the session id provided.
+        '''
+        if session_id:
+            try:
+                user = self._db.find_user_by(session_id=session_id)
+                if user:
+                    return user
+            except NoResultFound:
+                pass
+        return None
